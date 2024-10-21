@@ -1,4 +1,4 @@
-import CategoriaDAO from "../Persistencia/categoriaDao";
+import CategoriaDAO from "../Persistencia/categoriaDao.js";
 
 export default class Categoria {
     // Atributos privados usando "#"
@@ -46,9 +46,9 @@ export default class Categoria {
         const catDAO = new CategoriaDAO();
         await catDAO.excluir(this)
     }
-    async consulta(){
+    async consultar(termo){
         const catDAO = new CategoriaDAO();
-        return await catDAO.consultar()
+        return await catDAO.consultar(termo)
     }
 
   }

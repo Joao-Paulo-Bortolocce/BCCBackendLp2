@@ -8,8 +8,7 @@ export default class ProdutoDAO {
     }
 
     async init() {
-        try 
-        {
+        try {
             const conexao = await conectar(); //retorna uma conexão
             const sql = `
             CREATE TABLE IF NOT EXISTS produto(
@@ -79,13 +78,17 @@ export default class ProdutoDAO {
         let sql = "";
         let parametros = [];
         if (isNaN(parseInt(termo))) {
-            sql = `SELECT * FROM produto
-            INNER JOIN categoria c ON p.fk_codigo_cat = c.codigo WHERE descricao LIKE ?`;
+            sql = `SELECT * FROM produto p
+                INNER JOIN categoria c ON p.fk_codigo_cat = c.codigo
+                WHERE p.prod_descricao LIKE ?;
+                `;
             parametros = ['%' + termo + '%'];
         }
         else {
-            sql = `SELECT * FROM produto
-            INNER JOIN categoria c ON p.fk_codigo_cat = c.codigo WHERE codigo = ?`
+            sql = `SELECT * FROM produto p
+                    INNER JOIN categoria c ON p.fk_codigo_cat = c.codigo
+                    WHERE p.prod_codigo LIKE ?;
+                    `
             parametros = [termo];
         }
         const [linhas, campos] = await conexao.execute(sql, parametros);

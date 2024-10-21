@@ -27,7 +27,7 @@ export default class CategoriaDAO{
     async gravar(categoria){
         if(categoria instanceof Categoria){
             const conexao= await conectar();
-            const sql = "INSERT INTO categoria(descricao) VALUES ?";
+            const sql = "INSERT INTO categoria(descricao) VALUES (?)";
             const parametros = [categoria.descricao];
             const resultado = await conexao.execute(sql,parametros);
             categoria.codigo= resultado[0].insertId;
@@ -56,19 +56,28 @@ export default class CategoriaDAO{
         }
     }
     
-    async consultar(){
-        if(categoria instanceof Categoria){
-            const conexao= await conectar();
-            const sql = "SELECT * FROM categoria ORDER BY descricao";
-            [registros, campos] = await conexao.query(sql);
-            let listaCategorias=[];
-            for( const registro of registro){
-                const categoria = new Categoria(registro['codigo'],registro['descricao']);
-                listaCategorias.push(categoria);
-            }
-            await conexao.release();
-            return listaCategorias
+    async consultar(termo) {
+        let sql = "";
+        let parametros = [];
+        if (isNaN(parseInt(termo))) {
+            sql = "SELECT * FROM categoria WHERE descricao LIKE ? ORDER BY descricao ";
+            parametros.push("%" + termo + "%");
         }
-        
+        else {
+            sql = "SELECT * FROM categoria WHERE codigo = ? ORDER BY descricao ";
+            parametros.push(termo);
+        }
+        const conexao = await conectar();
+        const [registros, campos] = await conexao.query(sql, parametros);
+        let listaCategoria = [];
+        for (const registro of registros) {
+            const categoria = new Categoria(registro['codigo'],
+                registro['descricao']
+            );
+            listaCategoria.push(categoria);
+        }
+        conexao.release();
+        return listaCategoria;
     }
+    
 }
