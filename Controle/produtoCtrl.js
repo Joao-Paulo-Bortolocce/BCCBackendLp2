@@ -14,7 +14,8 @@ export default class ProdutoCtrl {
             const precoVenda = requisicao.body.precoVenda;
             const qtdEstoque = requisicao.body.qtdEstoque;
             const urlImagem = requisicao.body.urlImagem;
-            const dataValidade = new Date(requisicao.body.dtValidade).toLocaleDateString();
+            // const dataValidade = new Date(requisicao.body.dtValidade).toLocaleDateString();
+            const dataValidade = requisicao.body.dtValidade;
             const categoria = requisicao.body.categoria;
             //validação de regra de negócio
             const cat = new Categoria(parseInt(categoria.codigo));
