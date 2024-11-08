@@ -14,10 +14,10 @@ export default class ProdutoCtrl {
             const precoVenda = requisicao.body.precoVenda;
             const qtdEstoque = requisicao.body.qtdEstoque;
             const urlImagem = requisicao.body.urlImagem;
-            const dataValidade = requisicao.body.dataValidade;
+            const dataValidade = new Date(requisicao.body.dtValidade).toLocaleDateString();
             const categoria = requisicao.body.categoria;
             //validação de regra de negócio
-            const cat = new Categoria(categoria.codigo);
+            const cat = new Categoria(parseInt(categoria.codigo));
             cat.consultar(cat.codigo).then((lista) => {
                 if (lista.length > 0) {
                     //pseudo validação
@@ -89,7 +89,7 @@ export default class ProdutoCtrl {
             const precoVenda = requisicao.body.precoVenda;
             const qtdEstoque = requisicao.body.qtdEstoque;
             const urlImagem = requisicao.body.urlImagem;
-            const dataValidade = requisicao.body.dataValidade;
+            const dataValidade = new Date(requisicao.body.dtValidade).toLocaleDateString();
             const categoria = requisicao.body.categoria
             const cat = new Categoria(categoria.codigo);
             cat.consultar(cat.codigo).then((lista) => {
@@ -97,11 +97,11 @@ export default class ProdutoCtrl {
                     //pseudo validação
                     if (codigo > 0 && descricao && precoCusto > 0 &&
                         precoVenda > 0 && qtdEstoque >= 0 &&
-                        urlImagem && dataValidade && Categoria.codigo > 0) {
+                        urlImagem && dataValidade && categoria.codigo > 0) {
                         //alterar o produto
                         const produto = new Produto(codigo,
                             descricao, precoCusto, precoVenda,
-                            qtdEstoque, urlImagem, dataValidade);
+                            qtdEstoque, urlImagem, dataValidade,categoria);
                         produto.alterar()
                             .then(() => {
                                 resposta.status(200).json({

@@ -65,7 +65,7 @@ export default class CategoriaDAO{
         }
         else {
             sql = "SELECT * FROM categoria WHERE codigo = ? ORDER BY descricao ";
-            parametros.push(termo);
+            parametros.push(parseInt(termo));
         }
         const conexao = await conectar();
         const [registros, campos] = await conexao.query(sql, parametros);
