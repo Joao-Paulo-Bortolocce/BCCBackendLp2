@@ -36,7 +36,7 @@ export default class ProdutoDAO {
         if (produto instanceof Produto) {
             const conexao = await conectar();
             const sql = `INSERT INTO produto(prod_descricao,prod_precoCusto,prod_precoVenda,prod_qtdEstoque,prod_urlImagem,prod_dataValidade,fk_codigo_cat)
-                values(?,?,?,?,?,str_to_date(?,'%d/%m/%Y'),?)
+                values(?,?,?,?,?,str_to_date(?,'%Y-%m-%d'),?)
             `;
             let parametros = [
                 produto.descricao,
@@ -55,7 +55,7 @@ export default class ProdutoDAO {
     async alterar(produto) {
         if (produto instanceof Produto) {
             const conexao = await conectar();
-            const sql = `UPDATE produto SET prod_descricao=?,prod_precoCusto=?,prod_precoVenda=?,prod_qtdEstoque=?,prod_urlImagem=?,prod_dataValidade=str_to_date(?,'%d/%m/%Y'), fk_codigo_cat=?
+            const sql = `UPDATE produto SET prod_descricao=?,prod_precoCusto=?,prod_precoVenda=?,prod_qtdEstoque=?,prod_urlImagem=?,prod_dataValidade=str_to_date(?,'%Y-%m-%d'), fk_codigo_cat=?
                 WHERE prod_codigo = ?
             `;
             let parametros = [
@@ -72,6 +72,8 @@ export default class ProdutoDAO {
             await conexao.release(); //libera a conexão
         }
     }
+
+
     async consultar(termo) {
         //resuperar as linhas da tabela produto e transformá-las de volta em produtos
         const conexao = await conectar();
@@ -113,6 +115,31 @@ export default class ProdutoDAO {
         await conexao.release();
         return listaProdutos;
     }
+
+    async consultarCategoriasInProdutos(termo) {
+        //resuperar as linhas da tabela produto e transformá-las de volta em produtos
+        const conexao = await conectar();
+        let sql = "";
+        let parametros = [];
+        if (isNaN(parseInt(termo))) {
+            sql = `SELECT fk_codigo_cat FROM produto;  `
+        }
+        else {
+            sql = `SELECT fk_codigo_cat FROM produto
+            WHERE fk_codigo_cat = ?;
+            `;
+            parametros = [termo];
+
+        }
+        const [linhas, campos] = await conexao.execute(sql, parametros);
+        let listaCats = [];
+        for (const linha of linhas) {
+            listaCats.push(linha['fk_codigo_cat']);
+        }
+        await conexao.release();
+        return listaCats;
+    }
+
     async excluir(produto) {
         if (produto instanceof Produto) {
             const conexao = await conectar();
