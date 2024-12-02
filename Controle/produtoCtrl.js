@@ -90,7 +90,7 @@ export default class ProdutoCtrl {
             const precoVenda = requisicao.body.precoVenda;
             const qtdEstoque = requisicao.body.qtdEstoque;
             const urlImagem = requisicao.body.urlImagem;
-            const dataValidade = requisicao.body.dtValidade;
+            const dataValidade = requisicao.body.dtValidade.substr(0,10);
             const categoria = requisicao.body.categoria
             const cat = new Categoria(categoria.codigo);
             cat.consultar(cat.codigo).then((lista) => {
@@ -216,7 +216,7 @@ export default class ProdutoCtrl {
                     resposta.status(500).json(
                         {
                             "status": false,
-                            "mensagem": "Erro ao consultar produtos"
+                            "mensagem": "Erro ao consultar produtos: "+ erro.message
                         }
                     );
                 });

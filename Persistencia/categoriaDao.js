@@ -38,8 +38,8 @@ export default class CategoriaDAO{
     async editar(categoria){
         if(categoria instanceof Categoria){
             const conexao= await conectar();
-            const sql = "UPDATE categoria  SET descricao = ?";
-            const parametros = [categoria.descricao];
+            const sql = "UPDATE categoria  SET descricao = ? WHERE codigo=?";
+            const parametros = [categoria.descricao,categoria.codigo];
             const resultado = await conexao.execute(sql,parametros);
             await conexao.release();
         }
