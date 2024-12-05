@@ -13,19 +13,19 @@ export default class ProdutoDAO {
             const conexao = await conectar(); //retorna uma conexão
             const sql = `
             CREATE TABLE IF NOT EXISTS produto(
-                prod_codigo INT NOT NULL AUTO_INCREMENT,
-                prod_descricao VARCHAR(200) NOT NULL,
-                prod_precoCusto DECIMAL(10,2) NOT NULL,
-                prod_precoVenda DECIMAL(10,2) NOT NULL,
-                prod_qtdEstoque INT NOT NULL DEFAULT 0,
-                prod_urlImagem VARCHAR(250),
-                prod_dataValidade DATE NOT NULL,
-                fk_codigo_cat INT NOT NULL,
-                fk_cnpj_forn INT NOT NULL,
-                CONSTRAINT pk_produto PRIMARY KEY(prod_codigo),
-                CONSTRAINT fk_categoria FOREIGN KEY (fk_codigo_cat) REFERENCES categoria(codigo)
-                CONSTRAINT fk_fornecedor FOREIGN KEY (fk_cnpj_forn) REFERENCES fornecedor(cnpj)
-            )
+            prod_codigo INT NOT NULL AUTO_INCREMENT,
+            prod_descricao VARCHAR(200) NOT NULL,
+            prod_precoCusto DECIMAL(10,2) NOT NULL,
+            prod_precoVenda DECIMAL(10,2) NOT NULL,
+            prod_qtdEstoque INT NOT NULL DEFAULT 0,
+            prod_urlImagem VARCHAR(250),
+            prod_dataValidade DATE NOT NULL,
+            fk_codigo_cat INT NOT NULL,
+            fk_cnpj_forn VARCHAR(20) NOT NULL,
+            CONSTRAINT pk_produto PRIMARY KEY(prod_codigo),
+            CONSTRAINT fk_categoria FOREIGN KEY (fk_codigo_cat) REFERENCES categoria(codigo),
+            CONSTRAINT fk_fornecedor FOREIGN KEY (fk_cnpj_forn) REFERENCES fornecedor(cnpj)
+        );
         `;
             await conexao.execute(sql);
             await conexao.release();
@@ -50,7 +50,7 @@ export default class ProdutoDAO {
                 produto.dataValidade,
                 produto.categoria.codigo,
                 produto.fornecedor.cnpj
-                
+
             ]; //dados do produto
             const resultado = await conexao.execute(sql, parametros);
             produto.codigo = resultado[0].insertId;
@@ -164,7 +164,7 @@ export default class ProdutoDAO {
         const conexao = await conectar();
         let sql = "";
         let parametros = [];
-        if (termo===undefined || isNaN(parseInt(termo[0]))) {
+        if (termo === undefined || isNaN(parseInt(termo[0]))) {
             sql = `SELECT fk_cnpj_forn FROM produto;  `
         }
         else {
