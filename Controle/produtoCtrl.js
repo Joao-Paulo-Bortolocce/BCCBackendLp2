@@ -17,6 +17,7 @@ export default class ProdutoCtrl {
             // const dataValidade = new Date(requisicao.body.dtValidade).toLocaleDateString();
             const dataValidade = requisicao.body.dtValidade;
             const categoria = requisicao.body.categoria;
+            const fornecedor = requisicao.body.fornecedor;
             //validação de regra de negócio
             const cat = new Categoria(parseInt(categoria.codigo));
             cat.consultar(cat.codigo).then((lista) => {
@@ -24,12 +25,12 @@ export default class ProdutoCtrl {
                     //pseudo validação
                     if (descricao && precoCusto > 0 &&
                         precoVenda > 0 && qtdEstoque >= 0 &&
-                        urlImagem && dataValidade && categoria.codigo > 0) {
+                        urlImagem && dataValidade && categoria.codigo > 0 && fornecedor.cnpj) {
                         //gravar o produto
 
                         const produto = new Produto(0,
                             descricao, precoCusto, precoVenda,
-                            qtdEstoque, urlImagem, dataValidade, categoria);
+                            qtdEstoque, urlImagem, dataValidade, categoria, fornecedor);
 
                         produto.incluir()
                             .then(() => {
@@ -90,19 +91,20 @@ export default class ProdutoCtrl {
             const precoVenda = requisicao.body.precoVenda;
             const qtdEstoque = requisicao.body.qtdEstoque;
             const urlImagem = requisicao.body.urlImagem;
-            const dataValidade = requisicao.body.dtValidade.substr(0,10);
+            const dataValidade = requisicao.body.dtValidade.substr(0, 10);
             const categoria = requisicao.body.categoria
+            const fornecedor = requisicao.body.fornecedor;
             const cat = new Categoria(categoria.codigo);
             cat.consultar(cat.codigo).then((lista) => {
                 if (lista.length > 0) {
                     //pseudo validação
                     if (codigo > 0 && descricao && precoCusto > 0 &&
                         precoVenda > 0 && qtdEstoque >= 0 &&
-                        urlImagem && dataValidade && categoria.codigo > 0) {
+                        urlImagem && dataValidade && categoria.codigo > 0 && fornecedor.cnpj) {
                         //alterar o produto
                         const produto = new Produto(codigo,
                             descricao, precoCusto, precoVenda,
-                            qtdEstoque, urlImagem, dataValidade,categoria);
+                            qtdEstoque, urlImagem, dataValidade, categoria, fornecedor); 
                         produto.alterar()
                             .then(() => {
                                 resposta.status(200).json({
@@ -216,7 +218,7 @@ export default class ProdutoCtrl {
                     resposta.status(500).json(
                         {
                             "status": false,
-                            "mensagem": "Erro ao consultar produtos: "+ erro.message
+                            "mensagem": "Erro ao consultar produtos: " + erro.message
                         }
                     );
                 });

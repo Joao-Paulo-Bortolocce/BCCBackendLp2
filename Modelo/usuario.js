@@ -2,6 +2,7 @@
 
 export default class Usuario {
 
+    #id
     #username
     #email
     #senha
@@ -39,8 +40,16 @@ export default class Usuario {
             this._tipo = value;
         }
 
+        constructor(id,username, email, senha, tipo) {
+            this.#id = id;
+            this.#username = username;
+            this.#email = email;
+            this.#senha = senha;
+            this.#tipo = tipo;
+        }
 
-        constructor(username, email, senha, tipo) {
+        constructor(username,email,senha,tipo){
+            this.#id = 0;
             this.#username = username;
             this.#email = email;
             this.#senha = senha;

@@ -131,63 +131,63 @@ export default class CategoriaCtrl {
                 })
 
             }
-        
+
+            else {
+                resposta.status(400).json(
+                    {
+                        "status": false,
+                        "mensagem": "Informe um código válido de uma categoria conforme documentação da API."
+                    }
+                );
+            }
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Requisição inválida! Consulte a documentação da API."
+            });
+
+        }
+    }
+
+    consultar(requisicao, resposta) {
+        resposta.type("application/json");
+        if (requisicao.method == "GET") {
+            let codigo = requisicao.params.codigo;
+            //evitar que código tenha valor undefined
+            if (isNaN(codigo)) {
+                codigo = "";
+            }
+
+            const categoria = new Categoria();
+            //método consultar retorna uma lista de categorias
+            categoria.consultar(codigo)
+                .then((listaCategorias) => {
+                    resposta.status(200).json(listaCategorias
+                        /*{
+                            "status": true,
+                            "listacategorias": listacategorias
+                        }*/
+                    );
+                })
+                .catch((erro) => {
+                    resposta.status(500).json(
+                        {
+                            "status": false,
+                            "mensagem": "Erro ao consultar categorias"
+                        }
+                    );
+                });
+
+        }
         else {
             resposta.status(400).json(
                 {
                     "status": false,
-                    "mensagem": "Informe um código válido de uma categoria conforme documentação da API."
+                    "mensagem": "Requisição inválida! Consulte a documentação da API."
                 }
             );
         }
     }
-    else {
-    resposta.status(400).json({
-        "status": false,
-        "mensagem": "Requisição inválida! Consulte a documentação da API."
-    });
-
-}
-    }
-
-consultar(requisicao, resposta) {
-    resposta.type("application/json");
-    if (requisicao.method == "GET") {
-        let codigo = requisicao.params.codigo;
-        //evitar que código tenha valor undefined
-        if (isNaN(codigo)) {
-            codigo = "";
-        }
-
-        const categoria = new Categoria();
-        //método consultar retorna uma lista de categorias
-        categoria.consultar(codigo)
-            .then((listaCategorias) => {
-                resposta.status(200).json(listaCategorias
-                    /*{
-                        "status": true,
-                        "listacategorias": listacategorias
-                    }*/
-                );
-            })
-            .catch((erro) => {
-                resposta.status(500).json(
-                    {
-                        "status": false,
-                        "mensagem": "Erro ao consultar categorias"
-                    }
-                );
-            });
-
-    }
-    else {
-        resposta.status(400).json(
-            {
-                "status": false,
-                "mensagem": "Requisição inválida! Consulte a documentação da API."
-            }
-        );
-    }
-}
 
 }

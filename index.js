@@ -9,8 +9,10 @@ import express from 'express';
 import rotaProduto from './Rotas/rotaProdutos.js';
 import rotaCategoria from "./Rotas/rotaCategorias.js"
 import rotaCliente from './Rotas/rotaClientes.js';
+import rotaFornecedor from './Rotas/rotaFornecedor.js';
 import cors from 'cors';
 import dotenv from 'dotenv'
+import rotaUsuario from './Rotas/rotaUsuarios.js';
 
 //CARREGAR AS VARIAVEIS DE AMBIENTE LOCALIZADAS NA RAIZ DO PROJETO
 // A PARTIR DO ARQUIVO .ENV LOCALIZADO NA RAIZ DO PROJETO
@@ -37,7 +39,8 @@ app.use(express.static('./publico'));
 app.use('/produtos', rotaProduto);
 app.use('/categorias',rotaCategoria)
 app.use('/clientes',rotaCliente);
-//app.use('/fornecedores', rotaFornecedor);
+app.use('/usuarios', rotaUsuario)
+app.use('/fornecedores', rotaFornecedor);
 //app.use('/usuarios', rotaUsuario);
 
 app.listen(porta, host, () => {

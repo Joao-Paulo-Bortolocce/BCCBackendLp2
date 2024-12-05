@@ -1,7 +1,7 @@
 import Usuario from '../Modelo/usuario.js'
 import conectar from './Conexao.js'
 
-export default class UsuarioDAO (){
+export default class UsuarioDAO {
     constructor() {
         this.init();
     }
@@ -30,21 +30,80 @@ export default class UsuarioDAO (){
     async incluir(usuario) {
         if (usuario instanceof Usuario) {
             const conexao = await conectar();
-            const sql = `INSERT INTO usuario(prod_descricao,prod_precoCusto,prod_precoVenda,prod_qtdEstoque,prod_urlImagem,prod_dataValidade,fk_codigo_cat)
-                values(?,?,?,?,?,str_to_date(?,'%Y-%m-%d'),?)
+            const sql = `INSERT INTO usuario(usuario_username,usuario_senha,usuario_tipo,usuario_email)
+                values(?,?,?,?)
             `;
             let parametros = [
-                produto.descricao,
-                produto.precoCusto,
-                produto.precoVenda,
-                produto.qtdEstoque,
-                produto.urlImagem,
-                produto.dataValidade,
-                produto.categoria.codigo
-            ]; //dados do produto
+                usuario.username,
+                usuario.senha,
+                usuario.tipo,
+                usuario.email
+            ]; 
             const resultado = await conexao.execute(sql, parametros);
-            produto.codigo = resultado[0].insertId;
+            usuario.id = resultado[0].insertId;
             await conexao.release(); //libera a conexão
         }
     }
+
+    async alterar(usuario) {
+        if (usuario instanceof Usuario) {
+            const conexao = await conectar();
+            const sql = `UPDATE usuario SET usuario_username=?,usuario_senha=?,usuario_tipo=?,usuario_email=?
+                WHERE usuario_id = ?
+            `;
+            let parametros = [
+                usuario.username,
+                usuario.senha,
+                usuario.tipo,
+                usuario.email,
+                usuario.id
+            ]; //dados do usuario
+            await conexao.execute(sql, parametros);
+            await conexao.release(); //libera a conexão
+        }
+    }
+
+    async consultar(termo) {
+        //resuperar as linhas da tabela produto e transformá-las de volta em produtos
+        const conexao = await conectar();
+        let sql = "";
+        let parametros = [];
+        sql = `SELECT * FROM usuario 
+        WHERE usuario.id LIKE ?;
+        `;
+        if (isNaN(parseInt(termo))) {
+            parametros = ['%' + termo + '%'];
+        }
+        else {
+            parametros = [termo];
+        }
+        const [linhas, campos] = await conexao.execute(sql, parametros);
+        let listaUsuarios = [];
+        for (const linha of linhas) {
+            const usuario = new Usuario(
+                linha['usuario_id'],
+                linha['usuario_username'],
+                linha['usuario_senha'],
+                linha['usuario_tipo'],
+                linha['usuario_email']
+            );
+            listaUsuarios.push(usuario);
+        }
+        await conexao.release();
+        return listaUsuarios;
+    }
+
+    async excluir(usuario) {
+        if (usuario instanceof Usuario) {
+            const conexao = await conectar();
+            const sql = `DELETE FROM usuario WHERE usuario_id = ?`;
+            let parametros = [
+                parseInt(usuario.id)
+            ]; //dados do produto
+            await conexao.execute(sql, parametros);
+            await conexao.release(); //libera a conexão
+
+        }
+    }
+
 }
