@@ -111,7 +111,7 @@ export default class ClienteDAO {
             const sql = `DELETE FROM cliente WHERE cpf LIKE ?`;
             let parametros = [
                 parseInt(cliente.cpf)
-            ]; //dados do produto
+            ];
             await conexao.execute(sql, parametros);
             await conexao.release();
         }

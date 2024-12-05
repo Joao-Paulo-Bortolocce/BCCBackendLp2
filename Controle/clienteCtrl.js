@@ -73,7 +73,7 @@ export default class ClienteCtrl {
             const cep = requisicao.body.cep;
             const estado = requisicao.body.estado;
             const celular = requisicao.body.celular;
-            const dataNascimento = requisicao.body.dataNascimento;
+            const dataNascimento = requisicao.body.dataNascimento.substr(0,10);
 
             if (cpf && nome && email && cep && estado && celular && dataNascimento) {
                 const cliente = new Cliente(cpf, nome, email, cep, estado, celular, dataNascimento);
