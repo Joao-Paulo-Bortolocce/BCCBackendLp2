@@ -108,7 +108,7 @@ export default class ClienteDAO {
     async excluir(cliente) {
         if (cliente instanceof Cliente) {
             const conexao = await conectar();
-            const sql = `DELETE FROM cliente WHERE cpf = ?`;
+            const sql = `DELETE FROM cliente WHERE cpf LIKE ?`;
             let parametros = [
                 parseInt(cliente.cpf)
             ]; //dados do produto

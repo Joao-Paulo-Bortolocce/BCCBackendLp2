@@ -112,7 +112,7 @@ export default class ClienteCtrl {
     }
 
     excluir(requisicao, resposta) {
-        resposta.type("application/json");
+        resposta.type("application/json"); 
         if (requisicao.method == 'DELETE') {
             const cpf = requisicao.params.cpf;
             if (cpf) {
@@ -149,7 +149,7 @@ export default class ClienteCtrl {
             });
 
         }
-    }
+}
 
     consultar(requisicao, resposta) {
         resposta.type("application/json");
