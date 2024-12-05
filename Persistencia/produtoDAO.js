@@ -1,4 +1,4 @@
-//DAO - Data Access Object
+
 import Categoria from "../Modelo/categoria.js";
 import Produto from "../Modelo/produto.js";
 import conectar from "./Conexao.js";

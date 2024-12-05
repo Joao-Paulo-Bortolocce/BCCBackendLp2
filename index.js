@@ -8,6 +8,7 @@
 import express from 'express';
 import rotaProduto from './Rotas/rotaProdutos.js';
 import rotaCategoria from "./Rotas/rotaCategorias.js"
+import rotaCliente from './Rotas/rotaClientes.js';
 import cors from 'cors';
 import dotenv from 'dotenv'
 
@@ -35,31 +36,9 @@ app.use(express.static('./publico'));
 
 app.use('/produtos', rotaProduto);
 app.use('/categorias',rotaCategoria)
-//app.use('/clientes',rotaCliente);
+app.use('/clientes',rotaCliente);
 //app.use('/fornecedores', rotaFornecedor);
 //app.use('/usuarios', rotaUsuario);
-
-/*app.get('/',(requisicao, resposta)=>{
-    resposta.send('<h1>Página principal</h1>');
-    resposta.end();
-})
-
-app.get('/dinheiro', (requisicao, resposta) => {
-    resposta.send('<p>Toma aqui seus cinquenta reais</p>');
-    resposta.end();
-})
-
-//disponibilize a tabuada do 7 no endpoint /tabuada7
-app.get('/tabuada',(requisicao, resposta)=>{
-    let cont = 0;
-    const ate = requisicao.query.ate;
-    const numero = requisicao.query.numero;
-    while (cont < ate){
-        resposta.write(`<p>${numero} x ${cont} = ${numero * cont}</p>`);
-        cont++;
-    }
-    resposta.end();
-});*/
 
 app.listen(porta, host, () => {
     console.log(`Servidor escutando em http://${host}:${porta}`)
