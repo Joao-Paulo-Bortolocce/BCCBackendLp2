@@ -1,7 +1,5 @@
-//É a classe responsável por traduzir requisições HTTP e produzir respostas HTTP
-import Categoria from "../Modelo/categoria.js";
-import Produto from "../Modelo/produto.js";
 
+import Usuario from "../Modelo/usuario.js"
 export default class ProdutoCtrl {
 
     gravar(requisicao, resposta) {
@@ -13,41 +11,41 @@ export default class ProdutoCtrl {
             const senha = requisicao.body.senha;
             const tipo = requisicao.body.tipo;
             const email = requisicao.body.email;
-                if (username && senha  &&
-                        tipo  && email) {
-                        const usuario = new Usuario(0,
-                            username, senha, tipo,
-                            email);
+            if (username && senha &&
+                tipo && email) {
+                const usuario = new Usuario(0,
+                    username, senha, tipo,
+                    email);
 
-                        usuario.incluir()
-                            .then(() => {
-                                resposta.status(200).json({
-                                    "status": true,
-                                    "mensagem": "Usuario adicionado com sucesso!",
-                                    "codigo": usuario.id
-                                });
-                            })
-                            .catch((erro) => {
-                                resposta.status(500).json({
-                                    "status": false,
-                                    "mensagem": "Não foi possível incluir o usuario: " + erro.message
-                                });
-                            });
-                    }
-                    else {
-                        resposta.status(400).json(
-                            {
-                                "status": false,
-                                "mensagem": "Informe corretamente todos os dados de um usuario conforme documentação da API."
-                            }
-                        );
-                    }
-                }
+                usuario.incluir()
+                    .then(() => {
+                        resposta.status(200).json({
+                            "status": true,
+                            "mensagem": "Usuario adicionado com sucesso!",
+                            "id": usuario.id
+                        });
+                    })
+                    .catch((erro) => {
+                        resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Não foi possível incluir o usuario: " + erro.message
+                        });
+                    });
+            }
             else {
-                resposta.status(400).json({
-                    "status": false,
-                    "mensagem": "Requisição inválida! Consulte a documentação da API."
-                });
+                resposta.status(400).json(
+                    {
+                        "status": false,
+                        "mensagem": "Informe corretamente todos os dados de um usuario conforme documentação da API."
+                    }
+                );
+            }
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Requisição inválida! Consulte a documentação da API."
+            });
 
         }
 
@@ -59,40 +57,40 @@ export default class ProdutoCtrl {
         //Verificando se o método da requisição é POST e conteúdo é JSON
         if ((requisicao.method == 'PUT' || requisicao.method == 'PATCH') && requisicao.is("application/json")) {
             //o código será extraída da URL (padrão REST)
-            const id = requisicao.params.id;
+            const id = requisicao.body.id;
             const username = requisicao.body.username;
             const senha = requisicao.body.senha;
             const tipo = requisicao.body.tipo;
             const email = requisicao.body.email;
-                    if (id >= 0 && username && senha &&
-                        tipo && email) {
-                        const usuario = new Usuario(id,
-                            username, senha, tipo,
-                            email);
-                        usuario.alterar()
-                            .then(() => {
-                                resposta.status(200).json({
-                                    "status": true,
-                                    "mensagem": "Usuario alterado com sucesso!",
-                                });
-                            })
-                            .catch((erro) => {
-                                resposta.status(500).json({
-                                    "status": false,
-                                    "mensagem": "Não foi possível alterar o usuario: " + erro.message
-                                });
-                            });
+            if (id >= 0 && username && senha &&
+                tipo && email) {
+                const usuario = new Usuario(id,
+                    username, senha, tipo,
+                    email);
+                usuario.alterar()
+                    .then(() => {
+                        resposta.status(200).json({
+                            "status": true,
+                            "mensagem": "Usuario alterado com sucesso!",
+                        });
+                    })
+                    .catch((erro) => {
+                        resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Não foi possível alterar o usuario: " + erro.message
+                        });
+                    });
+            }
+            else {
+                resposta.status(400).json(
+                    {
+                        "status": false,
+                        "mensagem": "Informe corretamente todos os dados de um usuario conforme documentação da API."
                     }
-                    else {
-                        resposta.status(400).json(
-                            {
-                                "status": false,
-                                "mensagem": "Informe corretamente todos os dados de um usuario conforme documentação da API."
-                            }
-                        );
-                    }
-                }
-         else {
+                );
+            }
+        }
+        else {
             resposta.status(400).json({
                 "status": false,
                 "mensagem": "Requisição inválida! Consulte a documentação da API."
@@ -152,15 +150,20 @@ export default class ProdutoCtrl {
             const usuario = new Usuario();
             //método consultar retorna uma lista de produtos
             usuario.consultar(id)
-                .then((listaDeUsuarios) => {
-                    resposta.status(200).json(listaDeUsuarios
+                .then(([listaDeUsuarios,listaDeIds]) => {
+                    
+                    resposta.status(200).json(
+                        {
+                            "listaDeUsuarios": listaDeUsuarios,
+                            "listaDeIds": listaDeIds
+                        }
                     );
                 })
                 .catch((erro) => {
                     resposta.status(500).json(
                         {
                             "status": false,
-                            "mensagem": "Erro ao consultar usuarios: "+ erro.message
+                            "mensagem": "Erro ao consultar usuarios: " + erro.message
                         }
                     );
                 });

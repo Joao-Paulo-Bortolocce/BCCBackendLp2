@@ -64,21 +64,24 @@ export default class UsuarioDAO {
     }
 
     async consultar(termo) {
-        //resuperar as linhas da tabela produto e transformá-las de volta em produtos
         const conexao = await conectar();
         let sql = "";
         let parametros = [];
-        sql = `SELECT * FROM usuario 
-        WHERE usuario.id LIKE ?;
-        `;
-        if (isNaN(parseInt(termo))) {
+        if(isNaN(parseInt(termo))){
+            sql = `SELECT * FROM usuario 
+            WHERE usuario_username like ?;
+            `;
             parametros = ['%' + termo + '%'];
         }
-        else {
+        else{
+            sql = `SELECT * FROM usuario 
+            WHERE usuario_id = ?;
+            `;
             parametros = [termo];
         }
         const [linhas, campos] = await conexao.execute(sql, parametros);
         let listaUsuarios = [];
+        let listaDeIds = [];
         for (const linha of linhas) {
             const usuario = new Usuario(
                 linha['usuario_id'],
@@ -88,9 +91,10 @@ export default class UsuarioDAO {
                 linha['usuario_email']
             );
             listaUsuarios.push(usuario);
+            listaDeIds.push(usuario.id)
         }
         await conexao.release();
-        return listaUsuarios;
+        return [listaUsuarios,listaDeIds];
     }
 
     async excluir(usuario) {
@@ -99,7 +103,7 @@ export default class UsuarioDAO {
             const sql = `DELETE FROM usuario WHERE usuario_id = ?`;
             let parametros = [
                 parseInt(usuario.id)
-            ]; //dados do produto
+            ]; 
             await conexao.execute(sql, parametros);
             await conexao.release(); //libera a conexão
 

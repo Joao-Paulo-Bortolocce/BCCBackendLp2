@@ -1,46 +1,54 @@
-
+import UsuarioDAO from "../Persistencia/usuarioDAO.js";
 
 export default class Usuario {
 
-    #id
-    #username
-    #email
-    #senha
-    #tipo
+    #id;
+    #username;
+    #email;
+    #senha;
+    #tipo;
+
+        get id(){
+            return this.#id
+        }
+
+        set id(value){
+            this.#id=value
+        }
 
         get username() {
-            return this._username;
+            return this.#username;
         }
     
         set username(value) {
-            this._username = value;
+            this.#username = value;
         }
 
         get email() {
-            return this._email;
+            return this.#email;
         }
     
         set email(value) {
-            this._email = value;
+            this.#email = value;
         }
     
         get senha() {
-            return this._senha;
+            return this.#senha;
         }
     
         set senha(value) {
-            this._senha = value;
+            this.#senha = value;
         }
     
         get tipo() {
-            return this._tipo;
+            return this.#tipo;
         }
     
         set tipo(value) {
-            this._tipo = value;
+            this.#tipo = value;
         }
 
-        constructor(id,username, email, senha, tipo) {
+        constructor(id=0,username="", senha="", tipo="", email="") {
             this.#id = id;
             this.#username = username;
             this.#email = email;
@@ -48,13 +56,7 @@ export default class Usuario {
             this.#tipo = tipo;
         }
 
-        constructor(username,email,senha,tipo){
-            this.#id = 0;
-            this.#username = username;
-            this.#email = email;
-            this.#senha = senha;
-            this.#tipo = tipo;
-        }
+
 
         toJSON(){
             return {
@@ -67,9 +69,8 @@ export default class Usuario {
 
 
         async incluir(){
-            //instanciar a camada de persistencia do produto
-            const usuarioDAO = new usuarioDAO();
-            await usuarioDAO.incluir(this); //this referência a si mesmo
+            const usuarioDAO = new UsuarioDAO();
+            await usuarioDAO.incluir(this); 
         }
     
         async consultar(termo){

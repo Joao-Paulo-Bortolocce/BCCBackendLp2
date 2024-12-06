@@ -1,7 +1,7 @@
 
 import Categoria from "../Modelo/categoria.js";
+import Produto from "../Modelo/produto.js"
 import Fornecedor from "../Modelo/fornecedor.js";
-import Produto from "../Modelo/produto.js";
 import conectar from "./Conexao.js";
 export default class ProdutoDAO {
     constructor() {
@@ -41,6 +41,7 @@ export default class ProdutoDAO {
             const sql = `INSERT INTO produto(prod_descricao,prod_precoCusto,prod_precoVenda,prod_qtdEstoque,prod_urlImagem,prod_dataValidade,fk_codigo_cat,fk_cnpj_forn)
                 values(?,?,?,?,?,str_to_date(?,'%Y-%m-%d'),?,?)
             `;
+            const fornecedor= produto.fornecedor
             let parametros = [
                 produto.descricao,
                 produto.precoCusto,
@@ -49,7 +50,7 @@ export default class ProdutoDAO {
                 produto.urlImagem,
                 produto.dataValidade,
                 produto.categoria.codigo,
-                produto.fornecedor.cnpj
+                fornecedor.cnpj
 
             ]; //dados do produto
             const resultado = await conexao.execute(sql, parametros);

@@ -79,7 +79,7 @@ export default class Produto{
     }
 
     get fornecedor(){
-        return this.#categoria;
+        return this.#fornecedor;
     }
 
     set fornecedor(novoFornecedor){
