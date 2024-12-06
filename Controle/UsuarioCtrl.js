@@ -105,7 +105,7 @@ export default class ProdutoCtrl {
             const id = requisicao.params.id;
             if (id >= 0) {
                 const usuario = new Usuario(id);
-                usaurio.excluir()
+                usuario.excluir()
                     .then(() => {
                         resposta.status(200).json({
                             "status": true,
