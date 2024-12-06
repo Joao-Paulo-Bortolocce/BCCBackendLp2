@@ -3,10 +3,13 @@ import ProdutoDAO from "../Persistencia/produtoDAO.js";
 
 export default class FornecedorCtrl {
 
+    
+    
     gravar(requisicao, resposta) {
         resposta.type("application/json");
         if (requisicao.method == 'POST' && requisicao.is("application/json")) {
-            const cnpj = requisicao.body.cnpj;
+            let cnpj = requisicao.body.cnpj
+            cnpj = cnpj.replace(/\*/g, "/") ;
             const nome = requisicao.body.nome;
             const email = requisicao.body.email;
             const estado = requisicao.body.estado;
@@ -14,18 +17,20 @@ export default class FornecedorCtrl {
             const telefone = requisicao.body.telefone;
             const cep = requisicao.body.cep;
             const numero = requisicao.body.numero;
-
+            
+            
+            
             if (cnpj && nome && email && cep && estado && celular && telefone && numero) {
-
-
+                
+                
                 const fornecedor = new Fornecedor(cnpj, nome, email, cep, estado, celular, telefone, numero);
                 fornecedor.consultar(fornecedor.cnpj).then((listaFornecedors)=>{
                     if(listaFornecedors.length===0){
-
+                        
                         fornecedor.incluir()
-                            .then(() => {
-                                resposta.status(200).json({
-                                    "status": true,
+                        .then(() => {
+                            resposta.status(200).json({
+                                "status": true,
                                     "mensagem": "Fornecedor adicionado com sucesso!",
                                 });
                             })
@@ -35,12 +40,12 @@ export default class FornecedorCtrl {
                                     "mensagem": "Não foi possível incluir o fornecedor: " + erro.message
                                 });
                             });
-                    }
-                    else{
-                        resposta.status(400).json(
-                            {
-                                "status": false,
-                                "mensagem": "O cnpj informado ja esta cadastrado em outro fornecedor"
+                        }
+                        else{
+                            resposta.status(400).json(
+                                {
+                                    "status": false,
+                                    "mensagem": "O cnpj informado ja esta cadastrado em outro fornecedor"
                             }
                         );
                     }
@@ -54,7 +59,7 @@ export default class FornecedorCtrl {
                     }
                 );
             }
-
+            
         }
         else {
             resposta.status(400).json({
@@ -63,13 +68,14 @@ export default class FornecedorCtrl {
             });
 
         }
-
+        
     }
-
+    
     editar(requisicao, resposta) {
         resposta.type("application/json");
         if ((requisicao.method == 'PUT' || requisicao.method == 'PATCH') && requisicao.is("application/json")) {
-            const cnpj = requisicao.body.cnpj;
+            let cnpj = requisicao.body.cnpj
+            cnpj = cnpj.replace(/\*/g, "/") ;
             const nome = requisicao.body.nome;
             const email = requisicao.body.email;
             const estado = requisicao.body.estado;
@@ -77,21 +83,21 @@ export default class FornecedorCtrl {
             const telefone = requisicao.body.telefone;
             const cep = requisicao.body.cep;
             const numero = requisicao.body.numero;
-
-
+            
+            
             if (cnpj && nome && email && cep && estado && celular && telefone && numero) {
                 const fornecedor = new Fornecedor(cnpj, nome, email, cep, estado, celular, telefone, numero);
                 fornecedor.alterar()
-                    .then(() => {
-                        resposta.status(200).json({
-                            "status": true,
-                            "mensagem": "Fornecedor alterado com sucesso!",
-                        });
-                    })
-                    .catch((erro) => {
-                        resposta.status(500).json({
-                            "status": false,
-                            "mensagem": "Não foi possível alterar o fornecedor: " + erro.message
+                .then(() => {
+                    resposta.status(200).json({
+                        "status": true,
+                        "mensagem": "Fornecedor alterado com sucesso!",
+                    });
+                })
+                .catch((erro) => {
+                    resposta.status(500).json({
+                        "status": false,
+                        "mensagem": "Não foi possível alterar o fornecedor: " + erro.message
                         });
                     });
             }
@@ -103,24 +109,25 @@ export default class FornecedorCtrl {
                     }
                 );
             }
-
+            
         }
         else {
             resposta.status(400).json({
                 "status": false,
                 "mensagem": "Requisição inválida! Consulte a documentação da API."
             });
-
+            
         }
     }
-
+    
     excluir(requisicao, resposta) {
         resposta.type("application/json"); 
         if (requisicao.method == 'DELETE') {
-            const cnpj = requisicao.params.cnpj;
+            let cnpj = requisicao.params.cnpj
+            cnpj = cnpj.replace(/\*/g, "/") ;
             if (cnpj) {
-                produtoDao = new ProdutoDAO();
-                produtoDao.consultarFornecedorInProdutos(cnpj).then((lista)=>{
+                const prodDao = new ProdutoDAO();
+                prodDao.consultarFornecedorInProdutos(cnpj).then((lista)=>{
                     if(lista.length===0){
                         const fornecedor = new Fornecedor(cnpj);
                         fornecedor.excluir()
@@ -136,11 +143,11 @@ export default class FornecedorCtrl {
                                     "mensagem": "Não foi possível excluir o fornecedor: " + erro.message
                                 });
                             });
-
-                    }
-                    else{
-                        resposta.status(400).json(
-                            {
+                            
+                        }
+                        else{
+                            resposta.status(400).json(
+                                {
                                 "status": false,
                                 "mensagem": "Este fornecedor está cadastrado em um produto!!"
                             }
@@ -156,7 +163,7 @@ export default class FornecedorCtrl {
                     }
                 );
             }
-
+            
         }
         else {
             resposta.status(400).json({
@@ -167,19 +174,23 @@ export default class FornecedorCtrl {
         }
 }
 
-    consultar(requisicao, resposta) {
-        resposta.type("application/json");
-        if (requisicao.method == "GET") {
-            let cnpj = requisicao.params.cnpj;
-            //evitar que código tenha valor undefined
-            if (cnpj === undefined) {
-                cnpj = "";
-            }
+consultar(requisicao, resposta) {
+    resposta.type("application/json");
+    if (requisicao.method == "GET") {
+        let cnpj =requisicao.params.cnpj ;
+        //evitar que código tenha valor undefined
+        if (cnpj === undefined) {
+            cnpj = "";
+        }
+        else{
+            cnpj=cnpj.replace(/\*/g, "/")
 
-            const fornecedor = new Fornecedor();
-            fornecedor.consultar(cnpj)
-                .then((listaFornecedors) => {
-                    resposta.status(200).json(listaFornecedors
+        }
+        
+        const fornecedor = new Fornecedor();
+        fornecedor.consultar(cnpj)
+        .then((listaFornecedors) => {
+            resposta.status(200).json(listaFornecedors
                     );
                 })
                 .catch((erro) => {
@@ -201,5 +212,5 @@ export default class FornecedorCtrl {
             );
         }
     }
-
+    
 }
